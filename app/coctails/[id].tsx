@@ -5,10 +5,9 @@ import { getDrinkById } from "../../lib/theCoctailDb";
 
 export default function DrinkDetails() {
   const [details, setDetails] = useState(null);
+  const { id } = useLocalSearchParams();
 
   function getId() {
-    const { id } = useLocalSearchParams();
-
     if (typeof id === "string") {
       return id;
     }
@@ -26,7 +25,11 @@ export default function DrinkDetails() {
   }, []);
 
   if (!details) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={{ justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading...</Text>{" "}
+      </View>
+    );
   }
 
   return (
