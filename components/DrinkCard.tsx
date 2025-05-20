@@ -1,13 +1,14 @@
 import { Link } from "expo-router";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { Drink } from "../lib/theCoctailDb";
+import { Drink } from "../lib/theCocktailDb";
 
 export default function DrinkCard(props: Drink) {
   return (
     <View style={styles.card}>
       <Link
         href={{
-          pathname: `coctails/${props.idDrink}`,
+          pathname: "/(tabs)/cocktails/[id]",
+          params: { id: props.idDrink },
         }}
         style={{ width: "100%", height: "100%" }}
       >
