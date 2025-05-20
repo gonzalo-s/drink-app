@@ -1,8 +1,8 @@
 import { Link } from "expo-router";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { Drink } from "../lib/theCocktailDb";
+import { DrinkFiltered } from "../lib/theCocktailDb";
 
-export default function DrinkCard(props: Drink) {
+export default function DrinkCard(props: DrinkFiltered) {
   return (
     <View style={styles.card}>
       <Link
@@ -14,6 +14,7 @@ export default function DrinkCard(props: Drink) {
       >
         <View style={styles.wrapper}>
           <Text style={styles.cardTitle}>{props.strDrink}</Text>
+          <Text style={styles.cardText}>({props.strAlcoholic})</Text>
           <Image
             source={{
               uri: props.strDrinkThumb,
@@ -30,9 +31,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#1f1f1f",
     width: "100%",
-    height: 290,
+    height: 350,
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     padding: 16,
     borderRadius: 8,
   },
@@ -41,12 +42,18 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    gap: 10,
     padding: 0,
+    gap: 10,
   },
   cardTitle: {
     color: "white",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  cardText: {
+    color: "white",
     fontSize: 20,
+    textAlign: "center",
   },
   cardImage: {
     width: 200,

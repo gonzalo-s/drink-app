@@ -1,5 +1,4 @@
 import { View, StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -32,5 +31,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "flex-start",
+    padding: 10,
   },
 });

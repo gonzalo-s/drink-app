@@ -1,11 +1,9 @@
 import {
   View,
-  Text,
-  Image,
   StyleSheet,
   ActivityIndicator,
-  FlatList,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -15,24 +13,14 @@ import {
   getIngredientsInstructions,
   IngredientsInstructions,
 } from "@/lib/theCocktailDb";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import Ingredient from "@/components/Ingredient";
+import CocktailDetail from "@/components/CocktailDetail";
 
 export default function DrinkDetails() {
-  const insets = useSafeAreaInsets();
-
   const [details, setDetails] = useState<Drink | null>(null);
   const { id } = useLocalSearchParams();
 
   const ingredientInstructions: IngredientsInstructions | null =
     details && getIngredientsInstructions(details);
-  console.log(
-    "🚀 ~ DrinkDetails ~ ingredientInstructions:",
-    ingredientInstructions
-  );
 
   function getId() {
     if (typeof id === "string") {
@@ -64,79 +52,21 @@ export default function DrinkDetails() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View
-        style={{
-          paddingBottom: insets.bottom,
-          width: "100%",
-          flex: 1,
-        }}
-      >
-        <View style={styles.wrapper}>
-          <Text style={styles.cardTitle}>{details.strDrink}</Text>
-          <Image
-            source={{
-              uri: details.strDrinkThumb,
-            }}
-            style={styles.cardImage}
-          />
-          <Text style={styles.sectionTitle}>Category:</Text>
-          <Text style={{ color: "white", fontSize: 16 }}>
-            {details.strCategory} - {details.strAlcoholic}
-          </Text>
-          <Text style={styles.sectionTitle}>Glass:</Text>
-          <Text style={{ color: "white", fontSize: 16 }}>
-            {details.strGlass}
-          </Text>
-          <Text style={styles.sectionTitle}>Instructions:</Text>
-          <Text style={{ color: "white", fontSize: 16 }}>
-            {details.strInstructions}
-          </Text>
-
-          <Text style={styles.sectionTitle}>Ingredients:</Text>
-          <View
-            style={{
-              gap: 10,
-              justifyContent: "space-between",
-            }}
-          >
-            {ingredientInstructions?.length &&
-              ingredientInstructions.length > 0 &&
-              ingredientInstructions.map((item) => {
-                return <Ingredient {...item} key={item.ingredient} />;
-              })}
-          </View>
-        </View>
-      </View>
-    </ScrollView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 10 }}>
+      <ScrollView style={styles.container}>
+        <CocktailDetail
+          details={details}
+          ingredientInstructions={ingredientInstructions}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
-  },
-  sectionTitle: {
-    color: "white",
-    fontSize: 26,
-  },
-  sectionText: {
-    color: "white",
-    fontSize: 10,
-  },
-  wrapper: {
-    flex: 1,
-    padding: 16,
-    gap: 20,
-  },
-  cardTitle: {
-    color: "white",
-    fontSize: 26,
-  },
-  cardImage: {
-    width: 200,
-    height: 200,
+    backgroundColor: "#1f1f1f",
     borderRadius: 8,
   },
 });

@@ -57,22 +57,13 @@ export type DrinkFiltered = {
   idDrink: string;
   strDrink: string;
   strDrinkThumb: string;
+  strAlcoholic?: string;
 };
 
 export type IngredientsInstructions = Array<{
   ingredient: string;
   measure: string;
 }>;
-
-// Fetches a list of drinks (cocktails) from TheCocktailDB API
-export async function getLatestDrinks(): Promise<Drink[]> {
-  // This endpoint returns a list of cocktails ("drinks")
-  const response = await fetch(
-    "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail"
-  );
-  const json = await response.json();
-  return json.drinks;
-}
 
 // Fetches details for a single drink by ID
 export async function getDrinkDetails(idDrink: string): Promise<Drink | null> {
@@ -100,6 +91,7 @@ export async function getDrinksByFirstLetter(
     idDrink: drink.idDrink,
     strDrink: drink.strDrink,
     strDrinkThumb: drink.strDrinkThumb,
+    strAlcoholic: drink.strAlcoholic,
   }));
   return drinks;
 }

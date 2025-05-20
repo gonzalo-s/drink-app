@@ -6,28 +6,30 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
-import {
-  Drink,
-  getDrinksByFirstLetter,
-  getLatestDrinks,
-} from "../lib/theCocktailDb";
+import { DrinkFiltered, getDrinksByFirstLetter } from "../lib/theCocktailDb";
 import DrinkCard from "./DrinkCard";
 import useDebouncedFilter from "../utils/useFilter";
 
 export default function Main() {
   const [text, setText] = useState<string | null>(null);
   const [firstLetter, setFirstLetter] = useState("");
-  const [drinks, setDrinks] = useState<Array<Drink> | null>(null);
-  const [filteredDrinks, setFilteredDrinks] = useState<Array<Drink> | null>(
-    null
-  );
+  const [drinks, setDrinks] = useState<Array<DrinkFiltered> | null>(null);
+  const [filteredDrinks, setFilteredDrinks] =
+    useState<Array<DrinkFiltered> | null>(null);
 
   function onChangeText(text: string | null) {
-    if (text === null) {
-      setText(null);
+    if (text === null || text.trim().length === 0) {
+      resetDrinks();
       return;
     }
     setText(text.toLocaleLowerCase());
+  }
+
+  function resetDrinks() {
+    setFilteredDrinks(null);
+    setFirstLetter("");
+    setText(null);
+    setDrinks(null);
   }
 
   function getFirstLetter() {
@@ -60,10 +62,10 @@ export default function Main() {
 
   useEffect(() => {
     async function fetchDrinks() {
-      const drinks = await getLatestDrinks();
-      setDrinks(drinks);
+      const newDrinks = await getDrinksByFirstLetter("a");
+      setDrinks(newDrinks);
     }
-    if (drinks === null || text?.length === 0) {
+    if (drinks === null || text?.trim().length === 0) {
       fetchDrinks();
     }
   }, [drinks, text]);
@@ -80,7 +82,7 @@ export default function Main() {
       {drinks?.length && drinks.length > 0 ? (
         <FlatList
           data={filteredDrinks !== null ? filteredDrinks : drinks}
-          contentContainerStyle={{ gap: 10 }}
+          contentContainerStyle={{ gap: 10, paddingBottom: 150 }}
           keyExtractor={(drink) => drink.idDrink}
           renderItem={({ item }) => <DrinkCard {...item} />}
         />
