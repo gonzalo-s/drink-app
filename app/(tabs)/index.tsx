@@ -5,6 +5,7 @@ import {
   SafeAreaView,
 } from "react-native-safe-area-context";
 import Main from "@/components/Main";
+import { StatusBar } from "expo-status-bar";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -12,6 +13,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+        <StatusBar style="light" />
         <View
           style={{
             width: "100%",

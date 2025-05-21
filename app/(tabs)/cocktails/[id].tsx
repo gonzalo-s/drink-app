@@ -7,12 +7,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  Drink,
-  getDrinkById,
-  getIngredientsInstructions,
-  IngredientsInstructions,
-} from "@/lib/theCocktailDb";
+import { Drink, getDrinkById } from "@/lib/theCocktailDb";
 import CocktailDetail from "@/components/CocktailDetail";
 
 export default function DrinkDetails() {

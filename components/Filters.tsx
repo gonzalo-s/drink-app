@@ -13,7 +13,7 @@ function Filters() {
 
   return (
     <View>
-      <Text>Filters</Text>
+      <Text style={{ color: "white" }}>Filters</Text>
     </View>
   );
 }
