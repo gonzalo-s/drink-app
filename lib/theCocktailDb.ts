@@ -3,10 +3,10 @@ export type Drink = {
   idDrink: string;
   strDrink: string;
   strDrinkThumb: string;
-  ingredientInstructions?: IngredientsInstructions;
-  strCategory?: string;
-  strAlcoholic?: string;
-  strGlass?: string;
+  ingredientInstructions: IngredientsInstructions;
+  strCategory: string;
+  strAlcoholic: string;
+  strGlass: string;
   dateModified?: string;
   strCreativeCommonsConfirmed?: string;
   strDrinkAlternate?: any;
@@ -86,10 +86,11 @@ export async function getDrinksByFirstLetter(
   const response = await fetch(
     `https://www.thecocktaildb.com/api/json/v1/1/search.php?f=${firstLetter}`
   );
+
   const json = await response.json();
 
   if (!json.drinks) {
-    return [];
+    throw new Error("No drinks found");
   }
 
   const drinks = json.drinks.map((drink: Drink) => ({
@@ -194,9 +195,9 @@ export async function getFilters(): Promise<FiltersResponse> {
           const response = await fetch(url);
           const json = await response.json();
           if (!json.drinks) return [];
-          return json.drinks
-            .map((item: any) => item[prop])
-            .filter((v: any) => typeof v === "string" && v.trim() !== "");
+          return json.drinks.map((item: any) => {
+            return { label: item[prop], value: item[prop] };
+          });
         } catch {
           return [];
         }

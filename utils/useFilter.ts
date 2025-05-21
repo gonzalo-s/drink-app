@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Drink } from "../lib/theCocktailDb";
 
 // Custom hook for debounced filtering, now typed for TypeScript
-export default function useDebouncedFilter(
+export default function useDebouncedFilterBySearch(
   drinks: Array<Drink> | null,
   text: string | null,
   setFilteredDrinks: React.Dispatch<React.SetStateAction<Array<Drink> | null>>
