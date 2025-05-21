@@ -3,6 +3,7 @@ export type Drink = {
   idDrink: string;
   strDrink: string;
   strDrinkThumb: string;
+  ingredientInstructions?: IngredientsInstructions;
   strCategory?: string;
   strAlcoholic?: string;
   strGlass?: string;
@@ -53,12 +54,16 @@ export type Drink = {
   strVideo?: any;
 };
 
-export type DrinkFiltered = {
-  idDrink: string;
-  strDrink: string;
-  strDrinkThumb: string;
-  strAlcoholic?: string;
-};
+export type DrinkFiltered = Pick<
+  Drink,
+  | "idDrink"
+  | "strDrink"
+  | "strDrinkThumb"
+  | "strAlcoholic"
+  | "strCategory"
+  | "strGlass"
+  | "ingredientInstructions"
+>;
 
 export type IngredientsInstructions = Array<{
   ingredient: string;
@@ -92,6 +97,7 @@ export async function getDrinksByFirstLetter(
     strDrink: drink.strDrink,
     strDrinkThumb: drink.strDrinkThumb,
     strAlcoholic: drink.strAlcoholic,
+    ingredientInstructions: getIngredientsInstructions(drink),
   }));
   return drinks;
 }
@@ -101,7 +107,17 @@ export async function getDrinkById(id: string): Promise<Drink | null> {
     `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`
   );
   const json = await response.json();
-  return json.drinks ? json.drinks[0] : null;
+
+  if (!json.drinks) {
+    return null;
+  }
+
+  const drink = json.drinks[0];
+  const ingredientsInstructions = getIngredientsInstructions(drink);
+  return {
+    ...drink,
+    ingredientInstructions: ingredientsInstructions,
+  };
 }
 
 export function getIngredientsInstructions(
@@ -123,4 +139,82 @@ export function getIngredientsInstructions(
     }
   }
   return result;
+}
+
+export function getIngredients(drink: Drink): Array<string> {
+  const result: Array<string> = [];
+  for (let i = 1; i <= 15; i++) {
+    const ingredient = drink[`strIngredient${i}` as keyof Drink];
+    if (
+      ingredient &&
+      typeof ingredient === "string" &&
+      ingredient.trim() !== ""
+    ) {
+      result.push(ingredient);
+    }
+  }
+  return result;
+}
+
+export type FiltersResponse = {
+  categories: Array<string>;
+  glasses: Array<string>;
+  ingredients: Array<string>;
+  alcoholic: Array<string>;
+};
+
+export async function getFilters(): Promise<FiltersResponse> {
+  const endpoints = [
+    {
+      key: "categories",
+      url: "https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list",
+      prop: "strCategory",
+    },
+    {
+      key: "glasses",
+      url: "https://www.thecocktaildb.com/api/json/v1/1/list.php?g=list",
+      prop: "strGlass",
+    },
+    {
+      key: "ingredients",
+      url: "https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list",
+      prop: "strIngredient1",
+    },
+    {
+      key: "alcoholic",
+      url: "https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list",
+      prop: "strAlcoholic",
+    },
+  ];
+
+  try {
+    const results = await Promise.all(
+      endpoints.map(async ({ url, prop }) => {
+        try {
+          const response = await fetch(url);
+          const json = await response.json();
+          if (!json.drinks) return [];
+          return json.drinks
+            .map((item: any) => item[prop])
+            .filter((v: any) => typeof v === "string" && v.trim() !== "");
+        } catch {
+          return [];
+        }
+      })
+    );
+
+    return {
+      categories: results[0],
+      glasses: results[1],
+      ingredients: results[2],
+      alcoholic: results[3],
+    };
+  } catch {
+    return {
+      categories: [],
+      glasses: [],
+      ingredients: [],
+      alcoholic: [],
+    };
+  }
 }

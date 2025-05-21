@@ -9,6 +9,7 @@ import {
 import { DrinkFiltered, getDrinksByFirstLetter } from "../lib/theCocktailDb";
 import DrinkCard from "./DrinkCard";
 import useDebouncedFilter from "../utils/useFilter";
+import Filters from "./Filters";
 
 export default function Main() {
   const [text, setText] = useState<string | null>(null);
@@ -79,6 +80,7 @@ export default function Main() {
         placeholder="Search for a drink"
         placeholderTextColor="white"
       />
+      <Filters />
       {drinks?.length && drinks.length > 0 ? (
         <FlatList
           data={filteredDrinks !== null ? filteredDrinks : drinks}

@@ -4,15 +4,14 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import Ingredient from "./Ingredient";
-import { IngredientsInstructions, Drink } from "@/lib/theCocktailDb";
+import { Drink } from "@/lib/theCocktailDb";
 
 type CocktailDetailProps = {
   details: Drink;
-  ingredientInstructions: IngredientsInstructions | null;
 };
 
 export default function CocktailDetail(props: CocktailDetailProps) {
-  const insets = useSafeAreaInsets();
+  console.log("🚀 ~ CocktailDetail ~ props:", props);
 
   return (
     <View
@@ -53,9 +52,9 @@ export default function CocktailDetail(props: CocktailDetailProps) {
             justifyContent: "space-between",
           }}
         >
-          {props.ingredientInstructions?.length &&
-            props.ingredientInstructions.length > 0 &&
-            props.ingredientInstructions.map((item) => {
+          {props.details?.ingredientInstructions?.length &&
+            props.details.ingredientInstructions.length > 0 &&
+            props.details.ingredientInstructions.map((item) => {
               return <Ingredient {...item} key={item.ingredient} />;
             })}
         </View>

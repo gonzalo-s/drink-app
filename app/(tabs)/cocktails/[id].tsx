@@ -19,9 +19,6 @@ export default function DrinkDetails() {
   const [details, setDetails] = useState<Drink | null>(null);
   const { id } = useLocalSearchParams();
 
-  const ingredientInstructions: IngredientsInstructions | null =
-    details && getIngredientsInstructions(details);
-
   function getId() {
     if (typeof id === "string") {
       return id;
@@ -54,10 +51,7 @@ export default function DrinkDetails() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 10 }}>
       <ScrollView style={styles.container}>
-        <CocktailDetail
-          details={details}
-          ingredientInstructions={ingredientInstructions}
-        />
+        <CocktailDetail details={details} />
       </ScrollView>
     </SafeAreaView>
   );
