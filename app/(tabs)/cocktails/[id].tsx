@@ -9,10 +9,12 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Drink, getDrinkById } from "@/lib/theCocktailDb";
 import CocktailDetail from "@/components/CocktailDetail";
+import { useTheme } from "@emotion/react";
 
 export default function DrinkDetails() {
   const [details, setDetails] = useState<Drink | null>(null);
   const { id } = useLocalSearchParams();
+  const theme = useTheme();
 
   function getId() {
     if (typeof id === "string") {
@@ -37,15 +39,25 @@ export default function DrinkDetails() {
 
   if (!details) {
     return (
-      <View style={styles.container}>
+      <View
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
         <ActivityIndicator />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 10 }}>
-      <ScrollView style={styles.container}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        padding: 10,
+      }}
+    >
+      <ScrollView
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
         <CocktailDetail details={details} />
       </ScrollView>
     </SafeAreaView>

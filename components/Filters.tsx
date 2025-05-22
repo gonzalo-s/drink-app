@@ -1,8 +1,8 @@
 import { FiltersResponse, getFilters } from "@/lib/theCocktailDb";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-// import { Picker } from "@react-native-picker/picker";
+import { View } from "react-native";
 import { MultiSelect } from "react-native-element-dropdown";
+import { useTheme } from "@emotion/react";
 
 export type FilterProps = {
   filters: FiltersResponse;
@@ -10,6 +10,7 @@ export type FilterProps = {
 };
 
 function Filters(props: FilterProps) {
+  const theme = useTheme();
   const [filterOptions, setFilterOptions] = useState<FiltersResponse | null>(
     null
   );
@@ -37,17 +38,40 @@ function Filters(props: FilterProps) {
   return (
     <View>
       <MultiSelect
-        style={[styles.dropdown, { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
+        style={{
+          height: 50,
+          borderWidth: 0.5,
+          borderRadius: 8,
+          paddingHorizontal: 8,
+          backgroundColor: theme.colors.backgroundSecondary,
+        }}
+        placeholderStyle={{
+          fontSize: 16,
+          color: theme.colors.placeholder,
+        }}
+        selectedTextStyle={{
+          fontSize: 16,
+          color: theme.colors.dropdownSelected,
+        }}
+        inputSearchStyle={{
+          height: 40,
+          fontSize: 16,
+          color: theme.colors.text,
+          backgroundColor: theme.colors.inputBackground,
+        }}
+        iconStyle={{
+          width: 20,
+          height: 20,
+        }}
+        containerStyle={{
+          backgroundColor: theme.colors.backgroundSecondary,
+          padding: 16,
+        }}
         data={filterOptions?.alcoholic || []}
         labelField="label"
         valueField="value"
         value={props.filters.alcoholic}
         onChange={(item) => {
-          console.log("🚀 ~ onChange ~ item:", item);
           onMultiValueChange(item);
         }}
         confirmSelectItem
@@ -57,47 +81,3 @@ function Filters(props: FilterProps) {
 }
 
 export default Filters;
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    padding: 16,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    color: "white",
-    backgroundColor: "#1f1f1f",
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-    color: "red",
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-    color: "white",
-    backgroundColor: "#1f1f1f",
-  },
-});

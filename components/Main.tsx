@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   View,
   TextInput,
-  StyleSheet,
   Text,
 } from "react-native";
 import {
@@ -15,8 +14,10 @@ import {
 import DrinkCard from "./DrinkCard";
 import Filters, { FilterProps } from "./Filters";
 import useDebounce from "../utils/useDebounce";
+import { useTheme } from "@emotion/react";
 
 export default function Main() {
+  const theme = useTheme();
   const [text, setText] = useState<string | null>(null);
   const [firstLetter, setFirstLetter] = useState("");
   const [drinks, setDrinks] = useState<Array<DrinkFiltered> | null>(null);
@@ -85,20 +86,29 @@ export default function Main() {
   }, [filters, drinks, debouncedText, isLoading]);
 
   return (
-    <View>
+    <View style={{ gap: 10 }}>
       <TextInput
-        style={styles.input}
+        style={{
+          width: "100%",
+          height: 50,
+          borderWidth: 1,
+          borderRadius: 8,
+          padding: 10,
+          backgroundColor: theme.colors.backgroundSecondary,
+          color: theme.colors.text,
+          borderColor: theme.colors.border,
+        }}
         onChangeText={onChangeText}
         value={text || ""}
         placeholder="Search for a drink"
-        placeholderTextColor="white"
+        placeholderTextColor={theme.colors.placeholder}
       />
       <Filters filters={filters} setFilters={setFilters} />
       {isLoading ? (
         <ActivityIndicator />
       ) : noDrinksFound ? (
         <View style={{ alignItems: "center", marginTop: 40 }}>
-          <Text style={{ color: "white" }}>No drinks found.</Text>
+          <Text style={{ color: theme.colors.text }}>No drinks found.</Text>
         </View>
       ) : drinks?.length && drinks.length > 0 ? (
         <FlatList
@@ -111,20 +121,6 @@ export default function Main() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    width: "100%",
-    height: 40,
-    marginTop: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-    backgroundColor: "#1f1f1f",
-    color: "white",
-  },
-});
 
 type FilterDataProps = {
   drinks: Array<DrinkFiltered> | null;

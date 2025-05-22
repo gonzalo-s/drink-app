@@ -1,23 +1,29 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useTheme } from "@emotion/react";
+import ThemeToggleButton from "../../components/ThemeToggleButton";
 
 function TabsLayout() {
+  const theme = useTheme();
   return (
     <Tabs
       screenOptions={{
-        tabBarStyle: { backgroundColor: "black" },
-        tabBarInactiveTintColor: "white",
-        headerTintColor: "white",
-        headerStyle: { backgroundColor: "black" },
+        tabBarStyle: {
+          backgroundColor: theme.colors.background,
+        },
+        tabBarInactiveTintColor: theme.colors.text,
+
+        headerTintColor: theme.colors.text,
+        headerStyle: { backgroundColor: theme.colors.background },
+        headerRight: () => <ThemeToggleButton />,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
           tabBarLabel: "Home",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <MaterialCommunityIcons name="home" color={color} size={24} />
           ),
         }}
@@ -25,9 +31,8 @@ function TabsLayout() {
       <Tabs.Screen
         name="cocktails/[id]"
         options={{
-          title: "Cocktails",
           tabBarLabel: "Cocktails",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <MaterialCommunityIcons
               name="glass-cocktail"
               color={color}
