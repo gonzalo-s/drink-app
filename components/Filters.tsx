@@ -40,32 +40,46 @@ function Filters(props: FilterProps) {
       <MultiSelect
         style={{
           height: 50,
-          borderWidth: 0.5,
-          borderRadius: 8,
+          borderWidth: theme.border.width,
+          borderRadius: theme.border.radius,
+          borderColor: theme.colors.border,
           paddingHorizontal: 8,
           backgroundColor: theme.colors.backgroundSecondary,
         }}
+        inside={false}
         placeholderStyle={{
           fontSize: 16,
           color: theme.colors.placeholder,
         }}
         selectedTextStyle={{
           fontSize: 16,
-          color: theme.colors.dropdownSelected,
-        }}
-        inputSearchStyle={{
-          height: 40,
-          fontSize: 16,
           color: theme.colors.text,
-          backgroundColor: theme.colors.inputBackground,
+        }}
+        selectedStyle={{
+          borderColor: theme.colors.primary,
+          backgroundColor: theme.colors.background,
+          borderWidth: theme.border.width,
+          borderRadius: theme.border.radius,
         }}
         iconStyle={{
           width: 20,
           height: 20,
         }}
         containerStyle={{
+          marginTop: 10,
           backgroundColor: theme.colors.backgroundSecondary,
           padding: 16,
+          borderWidth: theme.border.width,
+          borderRadius: theme.border.radius,
+          borderColor: theme.colors.border,
+        }}
+        activeColor={theme.colors.background}
+        itemTextStyle={{
+          color: theme.colors.placeholder,
+        }}
+        itemContainerStyle={{
+          borderColor: theme.colors.border,
+          borderRadius: theme.border.radius,
         }}
         data={filterOptions?.alcoholic || []}
         labelField="label"

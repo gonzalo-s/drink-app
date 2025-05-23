@@ -13,6 +13,10 @@ export const lightTheme = {
     dropdownSelected: "#007AFF",
     inputBackground: "#fff",
   },
+  border: {
+    width: 1,
+    radius: 8,
+  },
 };
 
 export const darkTheme = {
@@ -28,5 +32,9 @@ export const darkTheme = {
     dropdownText: "#fff",
     dropdownSelected: "red",
     inputBackground: "#1f1f1f",
+  },
+  border: {
+    width: 1,
+    radius: 8,
   },
 };

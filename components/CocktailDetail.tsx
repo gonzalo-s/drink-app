@@ -22,6 +22,9 @@ export default function CocktailDetail(props: CocktailDetailProps) {
         height: "100%",
         flex: 1,
         backgroundColor: theme.colors.background,
+        borderRadius: theme.border.radius,
+        borderWidth: theme.border.width,
+        borderColor: theme.colors.borderColor,
       }}
     >
       <View
@@ -49,8 +52,8 @@ export default function CocktailDetail(props: CocktailDetailProps) {
             style={{
               width: 200,
               height: 200,
-              borderRadius: 8,
-              borderWidth: 1,
+              borderRadius: theme.border.radius,
+              borderWidth: theme.border.width,
               borderColor: theme.colors.borderColor,
             }}
           />

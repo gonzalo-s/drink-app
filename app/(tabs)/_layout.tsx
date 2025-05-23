@@ -13,7 +13,6 @@ function TabsLayout() {
           backgroundColor: theme.colors.background,
         },
         tabBarInactiveTintColor: theme.colors.text,
-
         headerTintColor: theme.colors.text,
         headerStyle: { backgroundColor: theme.colors.background },
         headerRight: () => <ThemeToggleButton />,

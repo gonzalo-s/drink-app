@@ -15,5 +15,9 @@ declare module "@emotion/react" {
       dropdownSelected: string;
       inputBackground: string;
     };
+    border: {
+      width: number;
+      radius: number;
+    };
   }
 }

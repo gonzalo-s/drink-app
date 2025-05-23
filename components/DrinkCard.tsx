@@ -14,8 +14,8 @@ export default function DrinkCard(props: DrinkFiltered) {
         display: "flex",
         justifyContent: "center",
         padding: 16,
-        borderRadius: 8,
-        borderWidth: 1,
+        borderRadius: theme.border.radius,
+        borderWidth: theme.border.width,
         borderColor: theme.colors.borderColor,
       }}
     >
@@ -61,8 +61,8 @@ export default function DrinkCard(props: DrinkFiltered) {
             style={{
               width: 200,
               height: 200,
-              borderRadius: 8,
-              borderWidth: 1,
+              borderRadius: theme.border.radius,
+              borderWidth: theme.border.width,
               borderColor: theme.colors.borderColor,
             }}
           />

@@ -40,7 +40,15 @@ export default function DrinkDetails() {
   if (!details) {
     return (
       <View
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        style={[
+          styles.container,
+          {
+            backgroundColor: theme.colors.backgroundSecondary,
+            borderRadius: theme.border.radius,
+            borderWidth: theme.border.width,
+            borderColor: theme.colors.borderColor,
+          },
+        ]}
       >
         <ActivityIndicator />
       </View>
@@ -56,7 +64,15 @@ export default function DrinkDetails() {
       }}
     >
       <ScrollView
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        style={[
+          styles.container,
+          {
+            backgroundColor: theme.colors.backgroundSecondary,
+            borderRadius: theme.border.radius,
+            borderWidth: theme.border.width,
+            borderColor: theme.colors.borderColor,
+          },
+        ]}
       >
         <CocktailDetail details={details} />
       </ScrollView>
