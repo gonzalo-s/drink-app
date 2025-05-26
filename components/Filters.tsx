@@ -1,6 +1,6 @@
 import { FilterKey, FiltersResponse, getFilters } from "@/lib/theCocktailDb";
 import { useEffect, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList } from "react-native";
 import React from "react";
 import {
   AccordionContent,
@@ -26,6 +26,8 @@ import {
 } from "@gluestack-ui/themed";
 import { CheckboxIndicator } from "@gluestack-ui/themed";
 import { Button } from "@gluestack-ui/themed";
+import { useTheme } from "@emotion/react";
+import { Theme } from "@emotion/react";
 
 export type FilterProps = {
   filters: FiltersResponse;
@@ -33,7 +35,7 @@ export type FilterProps = {
 };
 
 function Filters(props: FilterProps) {
-  // const theme = useTheme();
+  const theme = useTheme();
   const [showModal, setShowModal] = useState(false);
   const [filterOptions, setFilterOptions] = useState<FiltersResponse | null>(
     null
@@ -107,15 +109,14 @@ function Filters(props: FilterProps) {
         <Modal
           isOpen={showModal}
           onClose={closeModal}
-          backgroundColor="$trueGray800"
           closeOnOverlayClick
           sx={{
-            backgroundColor: "$black",
+            backgroundColor: theme.colors.backgroundSecondary,
           }}
         >
           <ModalContent
-            backgroundColor="green"
-            boxShadow="none"
+            backgroundColor="transparent"
+            shadowColor="transparent"
             w="100%"
             height="70%"
             justifyContent="center"
@@ -125,8 +126,8 @@ function Filters(props: FilterProps) {
             paddingHorizontal="$0"
           >
             <Accordion
-              backgroundColor="blue"
-              borderRadius="$lg"
+              backgroundColor="transparent"
+              shadowColor="transparent"
               style={{ flex: 1 }}
             >
               {filterOptions && (
@@ -136,24 +137,28 @@ function Filters(props: FilterProps) {
                     options={filterOptions.categories}
                     values={categories}
                     setValues={setCategories}
+                    theme={theme}
                   />
                   <Filter
                     filterKey="glasses"
                     options={filterOptions.glasses}
                     values={glasses}
                     setValues={setGlasses}
+                    theme={theme}
                   />
                   <Filter
                     filterKey="ingredients"
                     options={filterOptions.ingredients}
                     values={ingredients}
                     setValues={setIngredients}
+                    theme={theme}
                   />
                   <Filter
                     filterKey="alcoholic"
                     options={filterOptions.alcoholic}
                     values={alcoholic}
                     setValues={setAlcoholic}
+                    theme={theme}
                   />
                 </>
               )}
@@ -187,24 +192,40 @@ const Filter = React.memo(function Filter({
   options,
   values,
   setValues,
+  theme,
 }: {
   filterKey: FilterKey;
   options: string[];
   values: string[];
   setValues: (values: string[]) => void;
+  theme: Theme;
 }) {
   function onMultiValueChange(values: Array<string>) {
     setValues(values);
   }
 
-  const RenderCheckbox = React.memo(({ item }: { item: string }) => (
-    <Checkbox value={item} key={item} marginLeft="$5" height={50}>
-      <CheckboxIndicator marginRight={10}>
-        <CheckboxIcon as={CheckIcon} />
-      </CheckboxIndicator>
-      <CheckboxLabel>{item}</CheckboxLabel>
-    </Checkbox>
-  ));
+  const RenderCheckbox = React.memo(({ item }: { item: string }) => {
+    return (
+      <Checkbox
+        value={item}
+        key={item}
+        paddingLeft="$5"
+        marginLeft="$5"
+        marginRight="$5"
+        height={50}
+        $pressed-backgroundColor={theme.colors.primary}
+        $base-backgroundColor={theme.colors.backgroundSecondary}
+        $checked-backgroundColor={theme.colors.primary}
+      >
+        <CheckboxIndicator marginRight={10} $checked-backgroundColor={"white"}>
+          <CheckboxIcon as={CheckIcon} color={theme.colors.primary} />
+        </CheckboxIndicator>
+        <CheckboxLabel style={{ color: theme.colors.text }}>
+          {item}
+        </CheckboxLabel>
+      </Checkbox>
+    );
+  });
 
   const renderCheckboxItem = React.useCallback(
     ({ item }: { item: string }) => <RenderCheckbox item={item} />,
@@ -229,7 +250,7 @@ const Filter = React.memo(function Filter({
       </AccordionTrigger>
       <AccordionContent
         borderRadius="$lg"
-        backgroundColor="red"
+        backgroundColor="transparent"
         width="100%"
         paddingVertical="$0"
         paddingBottom="$0"
@@ -262,5 +283,4 @@ const Filter = React.memo(function Filter({
     </AccordionItem>
   );
 });
-
 export default Filters;
