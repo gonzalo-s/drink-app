@@ -157,12 +157,9 @@ export function getIngredients(drink: Drink): Array<string> {
   return result;
 }
 
-export type FiltersResponse = {
-  categories: Array<string>;
-  glasses: Array<string>;
-  ingredients: Array<string>;
-  alcoholic: Array<string>;
-};
+export type FilterKey = "categories" | "glasses" | "ingredients" | "alcoholic";
+
+export type FiltersResponse = Record<FilterKey, string[]>;
 
 export async function getFilters(): Promise<FiltersResponse> {
   const endpoints = [
@@ -195,9 +192,7 @@ export async function getFilters(): Promise<FiltersResponse> {
           const response = await fetch(url);
           const json = await response.json();
           if (!json.drinks) return [];
-          return json.drinks.map((item: any) => {
-            return { label: item[prop], value: item[prop] };
-          });
+          return json.drinks.map((item: any) => item[prop]);
         } catch {
           return [];
         }

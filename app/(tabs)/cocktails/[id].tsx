@@ -40,17 +40,15 @@ export default function DrinkDetails() {
   if (!details) {
     return (
       <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: theme.colors.backgroundSecondary,
-            borderRadius: theme.border.radius,
-            borderWidth: theme.border.width,
-            borderColor: theme.colors.borderColor,
-          },
-        ]}
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background,
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <ActivityIndicator />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
