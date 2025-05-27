@@ -29,6 +29,11 @@
       "favicon": "./assets/favicon.png",
       "output": "server"
     },
-    "scheme": "drinkapp"
+    "scheme": "drinkapp",
+    "extra": {
+      "eas": {
+        "projectId": "4530124f-2403-4d95-a52d-2de69e97056c"
+      }
+    }
   }
 }
