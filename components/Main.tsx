@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   FlatList,
   ActivityIndicator,
@@ -12,17 +12,15 @@ import {
   getDrinksByFirstLetter,
 } from "../lib/theCocktailDb";
 import DrinkCard from "./DrinkCard";
-import Filters, { FilterProps } from "./Filters";
+import Filters from "./Filters";
 import useDebounce from "../utils/useDebounce";
 import { useTheme } from "@emotion/react";
 
 export default function Main() {
   const theme = useTheme();
-  const [text, setText] = useState<string | null>(null);
-  const [firstLetter, setFirstLetter] = useState("");
+  const [text, setText] = useState<string>("");
+  const [firstLetter, setFirstLetter] = useState("a");
   const [drinks, setDrinks] = useState<Array<DrinkFiltered> | null>(null);
-  const [filteredDrinks, setFilteredDrinks] =
-    useState<Array<DrinkFiltered> | null>(null);
   const [filters, setFilters] = useState<FiltersResponse>({
     alcoholic: [],
     categories: [],
@@ -30,61 +28,83 @@ export default function Main() {
     ingredients: [],
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [noDrinksFound, setNoDrinksFound] = useState(false);
 
   const debouncedText = useDebounce(text, 300);
 
-  function onChangeText(text: string | null) {
-    if (text === null || text.trim().length === 0) {
-      setText(""); // Set to empty string for easier checks
-      setDrinks(null); // This will trigger fetch for 'a' in useEffect
-      setFilteredDrinks(null);
-      setFirstLetter("");
-      return;
-    }
-    setText(text.toLocaleLowerCase());
-  }
-
-  function getFirstLetter() {
-    const result = !text || text.trim().length === 0 ? "a" : text.trim()[0];
-    return result;
-  }
-
+  // Fetch drinks by first letter
   useEffect(() => {
-    const firstLetter = getFirstLetter();
-    setFirstLetter(firstLetter);
-  }, [text]);
-
-  useEffect(() => {
-    async function fetchDrinksByFirstLetter() {
+    async function fetchDrinks() {
       setIsLoading(true);
-      setNoDrinksFound(false);
       try {
-        const drinks = await getDrinksByFirstLetter(firstLetter);
-        setDrinks(drinks);
-        setNoDrinksFound(drinks.length === 0);
-      } catch (e) {
+        const result = await getDrinksByFirstLetter(firstLetter);
+        setDrinks(result);
+      } catch {
         setDrinks([]);
-        setNoDrinksFound(true);
       } finally {
         setIsLoading(false);
       }
     }
-    if (firstLetter) {
-      fetchDrinksByFirstLetter();
-    }
+    fetchDrinks();
   }, [firstLetter]);
 
+  // Update first letter when text changes
   useEffect(() => {
-    if (isLoading || !drinks) return; // Only filter when not loading and drinks is available
-    filterData({
-      drinks,
-      filters,
-      setFilteredDrinks,
-      searchText: debouncedText,
-    });
-  }, [filters, drinks, debouncedText, isLoading]);
+    setFirstLetter(!text || text.trim().length === 0 ? "a" : text.trim()[0]);
+  }, [text]);
 
+  // Declarative filtering
+  const filteredDrinks = useMemo(() => {
+    if (!drinks) return null;
+
+    // If no search and all filters are empty, show all drinks
+    const allFiltersEmpty =
+      (!debouncedText || debouncedText.trim().length === 0) &&
+      filters.alcoholic.length === 0 &&
+      filters.categories.length === 0 &&
+      filters.glasses.length === 0 &&
+      filters.ingredients.length === 0;
+
+    if (allFiltersEmpty) return drinks;
+
+    let filtered = drinks;
+
+    // Filter by search text if present
+    if (debouncedText && debouncedText.trim().length > 1) {
+      const search = debouncedText.trim().toLowerCase();
+      filtered = filtered.filter((drink) =>
+        drink.strDrink.toLowerCase().includes(search)
+      );
+    }
+
+    // Filter by filters if present
+    filtered = filtered.filter((drink) => {
+      const isAlcoholic =
+        filters.alcoholic.length > 0
+          ? filters.alcoholic.includes(drink.strAlcoholic)
+          : true;
+      const isCategory =
+        filters.categories.length > 0
+          ? filters.categories.includes(drink.strCategory)
+          : true;
+      const isGlass =
+        filters.glasses.length > 0
+          ? filters.glasses.includes(drink.strGlass)
+          : true;
+      const isIngredient =
+        filters.ingredients.length > 0
+          ? filters.ingredients.some((ingredient) =>
+              drink.ingredientInstructions?.some(
+                (drinkIngredient) => drinkIngredient.ingredient === ingredient
+              )
+            )
+          : true;
+      return isAlcoholic && isCategory && isGlass && isIngredient;
+    });
+
+    return filtered;
+  }, [drinks, filters, debouncedText]);
+
+  // UI
   return (
     <View style={{ gap: 10 }}>
       <TextInput
@@ -98,21 +118,21 @@ export default function Main() {
           color: theme.colors.text,
           borderColor: theme.colors.border,
         }}
-        onChangeText={onChangeText}
-        value={text || ""}
+        onChangeText={setText}
+        value={text}
         placeholder="Search for a drink"
         placeholderTextColor={theme.colors.placeholder}
       />
       <Filters filters={filters} setFilters={setFilters} />
       {isLoading ? (
         <ActivityIndicator />
-      ) : noDrinksFound ? (
+      ) : filteredDrinks && filteredDrinks.length === 0 ? (
         <View style={{ alignItems: "center", marginTop: 40 }}>
           <Text style={{ color: theme.colors.text }}>No drinks found.</Text>
         </View>
-      ) : drinks?.length && drinks.length > 0 ? (
+      ) : filteredDrinks ? (
         <FlatList
-          data={filteredDrinks !== null ? filteredDrinks : drinks}
+          data={filteredDrinks}
           contentContainerStyle={{ gap: 10, paddingBottom: 250 }}
           keyExtractor={(drink) => drink.idDrink}
           renderItem={({ item }) => <DrinkCard {...item} />}
@@ -120,71 +140,4 @@ export default function Main() {
       ) : null}
     </View>
   );
-}
-
-type FilterDataProps = {
-  drinks: Array<DrinkFiltered> | null;
-  filters: FiltersResponse;
-  setFilteredDrinks: React.Dispatch<
-    React.SetStateAction<Array<DrinkFiltered> | null>
-  >;
-  searchText: string | null;
-};
-
-function filterData(props: FilterDataProps) {
-  const { drinks, filters, setFilteredDrinks, searchText } = props;
-
-  if (!drinks) {
-    setFilteredDrinks(null);
-    return;
-  }
-
-  // If no search and all filters are empty, show original state
-  const allFiltersEmpty =
-    (!searchText || searchText.trim().length === 0) &&
-    filters.alcoholic.length === 0 &&
-    filters.categories.length === 0 &&
-    filters.glasses.length === 0 &&
-    filters.ingredients.length === 0;
-
-  if (allFiltersEmpty) {
-    setFilteredDrinks(null);
-    return;
-  }
-
-  // Filter by search text if present
-  let filtered = drinks;
-  if (searchText && searchText.trim().length > 1) {
-    const search = searchText.trim().toLowerCase();
-    filtered = filtered.filter((drink) =>
-      drink.strDrink.toLowerCase().includes(search)
-    );
-  }
-
-  // Filter by filters if present
-  filtered = filtered.filter((drink) => {
-    const isAlcoholic =
-      filters.alcoholic.length > 0
-        ? filters.alcoholic.includes(drink.strAlcoholic)
-        : true;
-    const isCategory =
-      filters.categories.length > 0
-        ? filters.categories.includes(drink.strCategory)
-        : true;
-    const isGlass =
-      filters.glasses.length > 0
-        ? filters.glasses.includes(drink.strGlass)
-        : true;
-    const isIngredient =
-      filters.ingredients.length > 0
-        ? filters.ingredients.some((ingredient) =>
-            drink.ingredientInstructions?.some(
-              (drinkIngredient) => drinkIngredient.ingredient === ingredient
-            )
-          )
-        : true;
-    return isAlcoholic && isCategory && isGlass && isIngredient;
-  });
-
-  setFilteredDrinks(filtered);
 }
