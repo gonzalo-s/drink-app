@@ -1,19 +1,24 @@
 import { IngredientsInstructions } from "@/lib/theCocktailDb";
 import { View, Text, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useTheme } from "@emotion/react";
 
 export default function Ingredient(props: IngredientsInstructions[0]) {
+  const theme = useTheme();
+
   return (
     <View style={styles.card}>
       <MaterialCommunityIcons
         name="rhombus-medium"
-        color={"white"}
+        color={theme.colors.text}
         style={{ marginEnd: 4 }}
       />
-      <Text style={{ color: "white", fontSize: 16 }}>
+      <Text style={{ color: theme.colors.text, fontSize: 16 }}>
         {props.measure.trim()}{" "}
       </Text>
-      <Text style={{ color: "white", fontSize: 16 }}>{props.ingredient}</Text>
+      <Text style={{ color: theme.colors.text, fontSize: 16 }}>
+        {props.ingredient}
+      </Text>
     </View>
   );
 }
