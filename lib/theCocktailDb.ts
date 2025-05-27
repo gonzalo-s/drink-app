@@ -97,6 +97,7 @@ export async function getDrinksByFirstLetter(
     idDrink: drink.idDrink,
     strDrink: drink.strDrink,
     strDrinkThumb: drink.strDrinkThumb,
+    strGlass: drink.strGlass.toLowerCase(),
     strAlcoholic: drink.strAlcoholic,
     ingredientInstructions: getIngredientsInstructions(drink),
   }));
@@ -192,7 +193,7 @@ export async function getFilters(): Promise<FiltersResponse> {
           const response = await fetch(url);
           const json = await response.json();
           if (!json.drinks) return [];
-          return json.drinks.map((item: any) => item[prop]);
+          return json.drinks.map((item: any) => item[prop].toLowerCase());
         } catch {
           return [];
         }
@@ -200,10 +201,10 @@ export async function getFilters(): Promise<FiltersResponse> {
     );
 
     return {
-      categories: results[0],
-      glasses: results[1],
-      ingredients: results[2],
-      alcoholic: results[3],
+      categories: results[0].sort(),
+      glasses: results[1].sort(),
+      ingredients: results[2].sort(),
+      alcoholic: results[3].sort(),
     };
   } catch {
     return {

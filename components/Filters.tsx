@@ -28,6 +28,7 @@ import { CheckboxIndicator } from "@gluestack-ui/themed";
 import { Button } from "@gluestack-ui/themed";
 import { useTheme } from "@emotion/react";
 import { Theme } from "@emotion/react";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 
 export type FilterProps = {
   filters: FiltersResponse;
@@ -221,7 +222,7 @@ const Filter = React.memo(function Filter({
           <CheckboxIcon as={CheckIcon} color={theme.colors.primary} />
         </CheckboxIndicator>
         <CheckboxLabel style={{ color: theme.colors.text }}>
-          {item}
+          {capitalizeFirstLetter(item)}
         </CheckboxLabel>
       </Checkbox>
     );

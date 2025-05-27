@@ -21,6 +21,10 @@ export default function Main() {
   const [text, setText] = useState<string>("");
   const [firstLetter, setFirstLetter] = useState("a");
   const [drinks, setDrinks] = useState<Array<DrinkFiltered> | null>(null);
+  // log drinks glasses
+  drinks?.map((drink) => {
+    console.log("🚀 ~ Main ~ drinks.glasses:", drink.strGlass);
+  });
   const [filters, setFilters] = useState<FiltersResponse>({
     alcoholic: [],
     categories: [],
@@ -80,21 +84,23 @@ export default function Main() {
     filtered = filtered.filter((drink) => {
       const isAlcoholic =
         filters.alcoholic.length > 0
-          ? filters.alcoholic.includes(drink.strAlcoholic)
+          ? filters.alcoholic.includes(drink.strAlcoholic.toLowerCase())
           : true;
       const isCategory =
         filters.categories.length > 0
-          ? filters.categories.includes(drink.strCategory)
+          ? filters.categories.includes(drink.strCategory.toLowerCase())
           : true;
       const isGlass =
         filters.glasses.length > 0
-          ? filters.glasses.includes(drink.strGlass)
+          ? filters.glasses.includes(drink.strGlass.toLowerCase())
           : true;
       const isIngredient =
         filters.ingredients.length > 0
-          ? filters.ingredients.some((ingredient) =>
+          ? filters.ingredients.every((ingredient) =>
               drink.ingredientInstructions?.some(
-                (drinkIngredient) => drinkIngredient.ingredient === ingredient
+                (drinkIngredient) =>
+                  drinkIngredient.ingredient.toLowerCase() ===
+                  ingredient.toLowerCase()
               )
             )
           : true;
