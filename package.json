@@ -12,6 +12,9 @@
   "dependencies": {
     "@emotion/native": "^11.11.0",
     "@emotion/react": "^11.14.0",
+    "@gluestack-style/react": "^1.0.57",
+    "@gluestack-ui/config": "^1.1.20",
+    "@gluestack-ui/themed": "^1.1.73",
     "@react-native-picker/picker": "^2.11.0",
     "expo": "~53.0.9",
     "expo-constants": "~17.1.6",
