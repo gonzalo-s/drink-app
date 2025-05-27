@@ -21,10 +21,7 @@ export default function Main() {
   const [text, setText] = useState<string>("");
   const [firstLetter, setFirstLetter] = useState("a");
   const [drinks, setDrinks] = useState<Array<DrinkFiltered> | null>(null);
-  // log drinks glasses
-  drinks?.map((drink) => {
-    console.log("🚀 ~ Main ~ drinks.glasses:", drink.strGlass);
-  });
+
   const [filters, setFilters] = useState<FiltersResponse>({
     alcoholic: [],
     categories: [],

@@ -29,6 +29,7 @@ import { Button } from "@gluestack-ui/themed";
 import { useTheme } from "@emotion/react";
 import { Theme } from "@emotion/react";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export type FilterProps = {
   filters: FiltersResponse;
@@ -55,7 +56,6 @@ function Filters(props: FilterProps) {
 
   useEffect(() => {
     async function fetchAllFiltersOptions() {
-      console.log("🚀 ~ fetchAllFiltersOptions ~ fetchAllFiltersOptions:");
       const filtersOptions = await getFilters();
       setFilterOptions(filtersOptions);
     }
@@ -103,7 +103,7 @@ function Filters(props: FilterProps) {
 
   return (
     <VStack>
-      <Button onPress={openModal}>
+      <Button onPress={openModal} h={50}>
         <ButtonText>Filters</ButtonText>
       </Button>
       <SafeAreaView style={{ flex: 1 }}>
@@ -233,6 +233,19 @@ const Filter = React.memo(function Filter({
     []
   );
 
+  const sortedOptions = React.useMemo(
+    () =>
+      [...options].sort((a, b) => {
+        const aChecked = values.includes(a);
+        const bChecked = values.includes(b);
+        if (aChecked === bChecked) return a.localeCompare(b);
+        return aChecked ? -1 : 1;
+      }),
+    [options, values]
+  );
+  // check if this filter has selected values
+  const hasSelectedValues = values.length > 0;
+
   return (
     <AccordionItem value={filterKey} bg="transparent">
       <AccordionTrigger borderRadius="$md" bg="transparent">
@@ -241,6 +254,16 @@ const Filter = React.memo(function Filter({
             <AccordionTitleText mb="$2" color="$textLight500">
               {filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}
             </AccordionTitleText>
+            <Text style={{ paddingRight: 14 }}>
+              {values.length > 0 ? (
+                <MaterialCommunityIcons
+                  name="circle"
+                  color={theme.colors.primary}
+                  size={10}
+                />
+              ) : null}
+            </Text>
+
             {isExpanded ? (
               <AccordionIcon as={ChevronUpIcon} color="$textLight500" />
             ) : (
@@ -265,7 +288,7 @@ const Filter = React.memo(function Filter({
           paddingVertical="$5"
         >
           <FlatList
-            data={options}
+            data={sortedOptions}
             keyExtractor={(item) => item}
             renderItem={renderCheckboxItem}
             getItemLayout={(_, index) => ({
